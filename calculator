@@ -1,0 +1,69 @@
+from tkinter import *  
+from tkinter import messagebox
+root= Tk()
+root.geometry('1050x5550')
+root.title('adding label')
+
+mylabel1=Label(root,text='arithmatic calc',background='pink')
+
+mylabel1.pack(padx=50)
+
+mylabel1.pack()
+
+frame= LabelFrame(root,text='calculate')
+frame.pack()
+name=Label(frame,text='number 1: ')
+name.grid(row=0,column=0)
+roll=Label(frame,text='number2: ')
+roll.grid(row=1,column=0)
+ent=Entry(frame,width=20,borderwidth=5,fg='black',bg='white' )
+ent.grid(row=0,column=1)
+def calculate():
+    try:
+        num1 = float(entry1.get())
+        num2 = float(entry.get())
+    except ValueError:
+        result_label.config(text="Please enter valid numbers.")
+        return
+    operation = operation_var.get()
+if operation == "+":
+        result = num1 + num2
+    elif operation == "-":
+        result = num1 - num2
+    elif operation == "*":
+        result = num1 * num2
+    elif operation == "/":
+        if num2 == 0:
+            result_label.config(text="Cannot divide by zero.")
+            return
+        result = num1 / num2
+    else:
+        result_label.config(text="Please select an operation.")
+        return
+    result_label.config(text=f"Result: {result}")
+entry = Entry(frame)
+entry.grid(row=1, column=1)
+entry1 = Entry(frame)
+entry1.grid(row=0, column=1, padx=10, pady=5)
+operation_var = StringVar()
+operation_var.set("+")
+label3 = Label(frame, text="Operation:")
+label3.grid(row=2, column=0, padx=10, pady=5)
+
+
+radio_add = Radiobutton(frame, text="+", variable=operation_var, value="+")
+radio_add.grid(row=3,column=2)
+radio_subtract = Radiobutton(frame, text="-", variable=operation_var, value="-")
+radio_subtract.grid(row=3,column=3)
+radio_multiply = Radiobutton(frame,text="*", variable=operation_var, value="*")
+radio_multiply.grid(row=3,column=4)
+radio_divide = Radiobutton(frame, text="/", variable=operation_var, value="/")
+radio_divide.grid(row=3,column=5)
+submit_button = Button(frame, text="Calculate", command=calculate)
+submit_button.grid(row=3, column=0, columnspan=2, pady=10)
+result_label = Label(frame, text="Result: ")
+result_label.grid(row=4, column=0, columnspan=2, pady=5)
+frame.mainloop()
+
+
+
