@@ -1,0 +1,59 @@
+import os
+
+
+tasks = []
+
+def show_menu():
+    
+    print("\nMenu Options")
+    print("1. Display Tasks")
+    print("2. Add a New Task")
+    print("3. Delete Task")
+    print("4. Exit Application")
+
+def display_tasks():
+    if not tasks:
+        print("\nYour task list is empty.")
+    else:
+        print("\nCurrent Tasks:")
+        for i, task in enumerate(tasks, 1):
+            print(f"{i}. {task}")
+
+def add_task():
+    new_task = input("\nEnter a new task: ")
+    tasks.append(new_task)
+    print(f"Task '{new_task}' added to the list.")
+
+def delete_task():
+    if not tasks:
+        print("\nYour task list is empty.")
+    else:
+        try:
+            display_tasks()
+            task_num = int(input("\nEnter the number of the task to delete: "))
+            if 1 <= task_num <= len(tasks):
+                removed_task = tasks.pop(task_num - 1)
+                print(f"Task '{removed_task}' removed from the list.")
+            else:
+                print("Invalid task number.")
+        except ValueError:
+            print("Please enter a valid number.")
+
+def main():
+    while True:
+        show_menu()
+        user_choice = input("\nSelect an option: ")
+        if user_choice == '1':
+            display_tasks()
+        elif user_choice == '2':
+            add_task()
+        elif user_choice == '3':
+            delete_task()
+        elif user_choice == '4':
+            print("Exiting the application.")
+            break
+        else:
+            print("Invalid selection. Please choose a number between 1 and 4.")
+
+if __name__ == "__main__":
+    main()
