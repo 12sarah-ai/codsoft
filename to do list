@@ -1,59 +1,77 @@
-import os
+import tkinter as tk
+from tkinter import messagebox
 
+class App:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("To-Do List")
 
-tasks = []
+        self.tasks = []
 
-def show_menu():
-    
-    print("\nMenu Options")
-    print("1. Display Tasks")
-    print("2. Add a New Task")
-    print("3. Delete Task")
-    print("4. Exit Application")
+        self.frame = tk.Frame(self.root)
+        self.frame.pack(pady=10)
 
-def display_tasks():
-    if not tasks:
-        print("\nYour task list is empty.")
-    else:
-        print("\nCurrent Tasks:")
-        for i, task in enumerate(tasks, 1):
-            print(f"{i}. {task}")
+        self.listbox = tk.Listbox(self.frame, width=50, height=10, bd=0, font=("Arial", 14))
+        self.listbox.pack(side=tk.LEFT, fill=tk.BOTH)
 
-def add_task():
-    new_task = input("\nEnter a new task: ")
-    tasks.append(new_task)
-    print(f"Task '{new_task}' added to the list.")
+        self.scrollbar = tk.Scrollbar(self.frame)
+        self.scrollbar.pack(side=tk.RIGHT, fill=tk.BOTH)
 
-def delete_task():
-    if not tasks:
-        print("\nYour task list is empty.")
-    else:
-        try:
-            display_tasks()
-            task_num = int(input("\nEnter the number of the task to delete: "))
-            if 1 <= task_num <= len(tasks):
-                removed_task = tasks.pop(task_num - 1)
-                print(f"Task '{removed_task}' removed from the list.")
-            else:
-                print("Invalid task number.")
-        except ValueError:
-            print("Please enter a valid number.")
+        self.listbox.config(yscrollcommand=self.scrollbar.set)
+        self.scrollbar.config(command=self.listbox.yview)
 
-def main():
-    while True:
-        show_menu()
-        user_choice = input("\nSelect an option: ")
-        if user_choice == '1':
-            display_tasks()
-        elif user_choice == '2':
-            add_task()
-        elif user_choice == '3':
-            delete_task()
-        elif user_choice == '4':
-            print("Exiting the application.")
-            break
+        self.entry = tk.Entry(self.root, font=("Arial", 18))
+        self.entry.pack(pady=10)
+
+        self.button_frame = tk.Frame(self.root)
+        self.button_frame.pack(pady=10)
+
+        self.add_button = tk.Button(self.button_frame, text="Add Task", command=self.add_task, font=("Arial", 18))
+        self.add_button.pack(side=tk.LEFT, padx=10)
+
+        self.delete_button = tk.Button(self.button_frame, text="Delete Task", command=self.delete_task, font=("Arial", 18))
+        self.delete_button.pack(side=tk.LEFT, padx=10)
+
+        self.load_tasks()
+
+    def add_task(self):
+        task = self.entry.get()
+        if task != "":
+            self.tasks.append(task)
+            self.update_listbox()
+            self.entry.delete(0, tk.END)
         else:
-            print("Invalid selection. Please choose a number between 1 and 4.")
+            messagebox.showwarning("You must enter a task.")
+
+    def delete_task(self):
+        try:
+            selected_task_index = self.listbox.curselection()[0]
+            self.tasks.pop(selected_task_index)
+            self.update_listbox()
+        except IndexError:
+            messagebox.showwarning("You must select a task to delete.")
+
+    def update_listbox(self):
+        self.listbox.delete(0, tk.END)
+        for task in self.tasks:
+            self.listbox.insert(tk.END, task)
+        self.save_tasks()
+
+    def load_tasks(self):
+        try:
+            with open("tasks.txt", "r") as file:
+                self.tasks = file.read().splitlines()
+                self.update_listbox()
+        except FileNotFoundError:
+            pass
+
+    def save_tasks(self):
+        with open("tasks.txt", "w") as file:
+            for task in self.tasks:
+                file.write(task + "\n")
 
 if __name__ == "__main__":
-    main()
+    root = tk.Tk()
+    app = App(root)
+    root.mainloop()
+
